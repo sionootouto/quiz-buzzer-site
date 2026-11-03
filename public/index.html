@@ -14,7 +14,7 @@
 <div id="questionArea"><div class="empty">まだ問題はありません。誰でも出題できます！</div></div>
 <div id="buzzerArea"></div>
 <div id="setterTools" hidden><h3>出題する</h3><label>問題文<textarea id="questionText" maxlength="1200" rows="4" placeholder="問題を入力（写真問題なら写真だけでもOK）"></textarea></label><label class="upload">写真を追加<input id="photo" type="file" accept="image/*"></label><img id="preview" alt="画像プレビュー" hidden><div class="buttonrow"><button id="startQuestion" class="primary">出題開始</button></div></div>
-<div id="judgeTools" hidden><h3>回答判定</h3><p class="hint">回答者の答えを聞いて、出題者が判定します。</p><div class="buttonrow"><button id="correct" class="good">正解</button><button id="wrong" class="danger">不正解</button><button id="endQuestion" class="secondary">問題終了</button></div></div>
+<div id="judgeTools" hidden><h3>回答判定</h3><p id="answerForJudge" class="hint">回答を待っています。</p><div class="buttonrow"><button id="correct" class="good">正解</button><button id="wrong" class="danger">不正解</button><button id="endQuestion" class="secondary">問題終了</button></div></div>
 <div id="nextTools" hidden><button id="next" class="primary wide">次の問題へ</button></div>
 </section>
 <aside class="panel players"><h2>参加者 <span id="count">0</span></h2><ul id="playerList"></ul><p class="hint">点数・順位はありません。何問でも自由に出題できます。</p></aside>
