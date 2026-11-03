@@ -1,0 +1,3 @@
+GitHub write test from ChatGPT.
+
+This file confirms that ChatGPT can create files in this repository.
