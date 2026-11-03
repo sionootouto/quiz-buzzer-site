@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, "public")));
 const rooms = new Map();
 const makeCode = () => crypto.randomBytes(3).toString("hex").toUpperCase();
 const clean = (s, n=40) => String(s || "").trim().slice(0,n);
-const ANSWER_TIME_LIMIT = 30;
+const ANSWER_TIME_LIMIT = Math.max(1, Number(process.env.ANSWER_TIME_LIMIT_SECONDS) || 30);
 function clearAnswerTimer(room) {
   if (room.answerTimer) clearTimeout(room.answerTimer);
   room.answerTimer = null;
