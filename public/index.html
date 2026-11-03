@@ -15,7 +15,7 @@
 <div id="buzzerArea"></div>
 <div id="setterTools" hidden><h3>出題する</h3><label>問題文<textarea id="questionText" maxlength="1200" rows="4" placeholder="問題を入力（写真問題なら写真だけでもOK）"></textarea></label><label class="upload">写真を追加<input id="photo" type="file" accept="image/*"></label><img id="preview" alt="画像プレビュー" hidden><div class="buttonrow"><button id="startQuestion" class="primary">出題開始</button></div></div>
 <div id="judgeTools" hidden><h3>回答判定</h3><p id="answerForJudge" class="hint">回答を待っています。</p><div class="buttonrow"><button id="correct" class="good">正解</button><button id="wrong" class="danger">不正解</button><button id="endQuestion" class="secondary">問題終了</button></div></div>
-<div id="revealTools" hidden><h3>正解発表</h3><label>正解を入力<input id="correctAnswer" type="text" maxlength="300" placeholder="正解を入力してください"></label><div class="buttonrow"><button id="revealAnswer" class="good">正解を発表する</button></div></div>
+<div id="revealTools" hidden><h3>正解発表</h3><label>正解を入力<input id="correctAnswer" type="text" maxlength="300" placeholder="正解を入力してください"></label><label>備考（任意）<textarea id="correctNote" maxlength="1000" rows="3" placeholder="補足説明など。空欄なら表示されません"></textarea></label><div class="buttonrow"><button id="revealAnswer" class="good">正解を発表する</button></div></div>
 <div id="nextTools" hidden><button id="next" class="primary wide">次の問題へ</button></div>
 </section>
 <aside class="panel players"><h2>参加者 <span id="count">0</span></h2><ul id="playerList"></ul><p class="hint">点数・順位はありません。何問でも自由に出題できます。</p></aside>
