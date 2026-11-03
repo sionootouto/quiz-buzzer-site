@@ -1,0 +1,9 @@
+{
+  "name": "free-buzzer-quiz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "自由出題・画像問題対応のオンライン早押しクイズ",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "express": "^4.21.2", "socket.io": "^4.8.1" },
+  "engines": { "node": ">=18" }
+}
