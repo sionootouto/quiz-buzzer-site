@@ -18,7 +18,15 @@ $("wrong").onclick=()=>socket.emit("answer:wrong");
 $("endQuestion").onclick=()=>socket.emit("question:end");
 $("next").onclick=()=>socket.emit("question:next");
 $("revealAnswer").onclick=()=>{const answer=$("correctAnswer").value.trim();const note=$("correctNote").value.trim();if(!answer)return toast("正解を入力してください");$("revealAnswer").disabled=true;socket.emit("answer:reveal",{answer,note},r=>{if(!r?.ok){$("revealAnswer").disabled=false;toast(r?.error||"正解を発表できませんでした")}else{$("correctAnswer").value="";$("correctNote").value="";toast("正解を発表しました")}})};
-socket.on("room:update",r=>{room=r;me=socket.id;showGame(r.code);render()});
+socket.on("room:update",r=>{room=r;me=socket.id;showGame(r.code);render();updateCountdown()});
+function updateCountdown(){
+  const display=$("countdownDisplay");
+  if(!display || !room?.answerDeadline) return;
+  const remaining=Math.max(0,Math.ceil((room.answerDeadline-Date.now())/1000));
+  display.textContent="⏱ 残り "+remaining+" 秒";
+  display.classList.toggle("countdown-warning",remaining<=10);
+}
+setInterval(updateCountdown,250);
 function render(){
 $("count").textContent=room.players.length;$("stateBadge").textContent=room.state==="question"?"出題中":room.state==="ended"?"問題終了":"待機中";$("statusText").textContent=room.message||"";
 $("playerList").innerHTML="";room.players.forEach(p=>{const li=document.createElement("li");li.textContent=p.name+(p.connected===false?"（再接続待ち）":"");if(p.id===me)li.classList.add("me");if(room.question&&p.id===room.question.setterId)li.classList.add("setter");if(room.buzzed&&p.id===room.buzzed.id)li.classList.add("buzzed");if(room.blocked.includes(p.id))li.classList.add("blocked");$("playerList").append(li)});
@@ -58,6 +66,10 @@ if(room.allWrong){
 }
 if(room.buzzed){
   const box=document.createElement("div");box.className="answerbox";
+  if(room.answerDeadline){
+    const timer=document.createElement("div");timer.id="countdownDisplay";timer.className="countdown";
+    box.append(timer);
+  }
   const strong=document.createElement("strong");strong.textContent="⚡ "+room.buzzed.name+" が回答中";
   const p=document.createElement("p");
   if(room.buzzed.id===me){
