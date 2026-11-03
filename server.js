@@ -72,16 +72,17 @@ io.on("connection", socket => {
     cb?.({ok:true}); emitRoom(room);
   });
   socket.on("answer:wrong", () => {
-    const room=getRoom(socket); if(!room || room.state!=="question" || room.buzzed?.id!==socket.id) return;
-    room.blocked.add(socket.id); room.buzzed=null;
+    const room=getRoom(socket); if(!room || room.state!=="question" || room.question?.setterId!==socket.id || !room.buzzed) return;
+    const answeredPlayer=room.buzzed;
+    room.blocked.add(answeredPlayer.id); room.buzzed=null;
     const eligible=[...room.players.keys()].filter(id=>id!==room.question.setterId && !room.blocked.has(id));
     if(!eligible.length){ room.state="ended"; room.message="全員不正解！問題終了"; }
-    else room.message=`不正解：${room.players.get(socket.id)?.name || "参加者"} はこの問題の回答権を失いました。他の人は早押しできます`;
+    else room.message=`不正解：${answeredPlayer.name} はこの問題の回答権を失いました。他の人は早押しできます`;
     emitRoom(room);
   });
   socket.on("answer:correct", () => {
-    const room=getRoom(socket); if(!room || room.state!=="question" || room.buzzed?.id!==socket.id) return;
-    room.state="ended"; room.message=`正解！${room.players.get(socket.id)?.name || "参加者"} が正解`; emitRoom(room);
+    const room=getRoom(socket); if(!room || room.state!=="question" || room.question?.setterId!==socket.id || !room.buzzed) return;
+    room.state="ended"; room.message=`正解！${room.buzzed.name} が正解`; emitRoom(room);
   });
   socket.on("question:end", () => {
     const room=getRoom(socket); if(!room || room.question?.setterId!==socket.id) return;
