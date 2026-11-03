@@ -15,3 +15,7 @@
 
 .revealed-note-label{font-weight:800!important;font-size:.95rem!important;margin-top:18px!important}
 .result-card .revealed-note{font-size:1rem;line-height:1.6;text-align:left;white-space:pre-wrap;background:rgba(255,255,255,.65);border-radius:10px;padding:12px;margin-top:6px}
+
+.countdown{font-size:1.5rem;font-weight:850;text-align:center;color:#4d3bb5;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.countdown.countdown-warning{color:#c03945;animation:countdown-pulse 1s ease-in-out infinite alternate}
+@keyframes countdown-pulse{from{opacity:1}to{opacity:.55}}
