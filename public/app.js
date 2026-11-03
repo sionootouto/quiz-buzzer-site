@@ -22,14 +22,50 @@ function render(){
 $("count").textContent=room.players.length;$("stateBadge").textContent=room.state==="question"?"出題中":room.state==="ended"?"問題終了":"待機中";$("statusText").textContent=room.message||"";
 $("playerList").innerHTML="";room.players.forEach(p=>{const li=document.createElement("li");li.textContent=p.name+(p.connected===false?"（再接続待ち）":"");if(p.id===me)li.classList.add("me");if(room.question&&p.id===room.question.setterId)li.classList.add("setter");if(room.buzzed&&p.id===room.buzzed.id)li.classList.add("buzzed");if(room.blocked.includes(p.id))li.classList.add("blocked");$("playerList").append(li)});
 const q=$("questionArea");q.innerHTML="";
-if(room.question){const text=document.createElement("div");text.className="question";text.textContent=room.question.text;q.append(text);if(room.question.image){const img=document.createElement("img");img.className="question-image";img.src=room.question.image;img.alt="出題画像";q.append(img)}
-if(room.buzzed){const box=document.createElement("div");box.className="answerbox";const strong=document.createElement("strong");strong.textContent="⚡ "+room.buzzed.name+" が回答中";const p=document.createElement("p");if(room.buzzed.id===me){if(room.buzzed.answer){p.textContent="回答を送信しました。出題者の判定を待っています。"}else{p.textContent="答えを入力して送信してください。";const form=document.createElement("form");form.className="answer-form";const input=document.createElement("input");input.type="text";input.maxLength=300;input.placeholder="ここに回答を入力";input.autocomplete="off";input.setAttribute("aria-label","回答");const button=document.createElement("button");button.type="submit";button.className="primary";button.textContent="回答を送信";form.append(input,button);form.onsubmit=e=>{e.preventDefault();const answer=input.value.trim();if(!answer)return toast("回答を入力してください");button.disabled=true;socket.emit("answer:submit",answer,r=>{if(!r?.ok){button.disabled=false;toast(r?.error||"回答を送信できませんでした")}else toast("回答を送信しました")})};box.append(strong,p,form)}}else if(room.question.setterId===me){p.textContent=room.buzzed.answer?("回答："+room.buzzed.answer):"回答入力待ちです";}else{p.textContent="回答入力中です";}if(!box.contains(strong))box.append(strong,p);q.append(box)}
+if(room.question){
+const text=document.createElement("div");text.className="question";text.textContent=room.question.text;q.append(text);
+if(room.question.image){const img=document.createElement("img");img.className="question-image";img.src=room.question.image;img.alt="出題画像";q.append(img)}
+if(room.answerResult){
+  const result=document.createElement("div");
+  result.className="result-card "+(room.answerResult.verdict==="correct"?"result-correct":room.answerResult.verdict==="wrong"?"result-wrong":"result-pending");
+  const title=document.createElement("strong");
+  title.textContent=room.answerResult.verdict==="correct"?"🎉 正解！":room.answerResult.verdict==="wrong"?"不正解":"回答";
+  const detail=document.createElement("p");
+  detail.textContent=room.answerResult.name+" の回答："+room.answerResult.answer;
+  result.append(title,detail);
+  if(room.answerResult.verdict==="correct"){
+    const note=document.createElement("p");note.className="result-note";note.textContent="この問題の正解者："+room.answerResult.name;result.append(note);
+  }else if(room.answerResult.verdict==="pending"){
+    const note=document.createElement("p");note.className="result-note";note.textContent="出題者の判定待ちです";result.append(note);
+  }
+  q.append(result);
+}
+if(room.buzzed){
+  const box=document.createElement("div");box.className="answerbox";
+  const strong=document.createElement("strong");strong.textContent="⚡ "+room.buzzed.name+" が回答中";
+  const p=document.createElement("p");
+  if(room.buzzed.id===me){
+    if(room.buzzed.answer){p.textContent="回答を送信しました。全員に回答が表示されています。";}
+    else{
+      p.textContent="答えを入力して送信してください。";
+      const form=document.createElement("form");form.className="answer-form";
+      const input=document.createElement("input");input.type="text";input.maxLength=300;input.placeholder="ここに回答を入力";input.autocomplete="off";input.setAttribute("aria-label","回答");
+      const button=document.createElement("button");button.type="submit";button.className="primary";button.textContent="回答を送信";
+      form.append(input,button);
+      form.onsubmit=e=>{e.preventDefault();const answer=input.value.trim();if(!answer)return toast("回答を入力してください");button.disabled=true;socket.emit("answer:submit",answer,r=>{if(!r?.ok){button.disabled=false;toast(r?.error||"回答を送信できませんでした")}else toast("回答を送信しました")})};
+      box.append(strong,p,form);
+    }
+  }else if(room.question.setterId===me){p.textContent=room.buzzed.answer?"回答は上に全員表示されています。":"回答入力待ちです";}
+  else{p.textContent=room.buzzed.answer?"回答は上に表示されています。":"回答入力中です";}
+  if(!box.contains(strong))box.append(strong,p);
+  q.append(box);
+}
 }else q.innerHTML='<div class="empty">まだ問題はありません。誰でも出題できます！</div>';
 const setter=room.question&&room.question.setterId===me;
 $("setterTools").hidden=room.state==="question"||room.state==="ended";
 $("judgeTools").hidden=!(setter&&room.state==="question"&&room.buzzed);
 if(setter&&room.state==="question"&&room.buzzed){$("answerForJudge").textContent=room.buzzed.answer?("届いた回答："+room.buzzed.answer):"回答者が回答を入力しています…";}
-$("nextTools").hidden=room.state!=="ended";
+$("nextTools").hidden=!(setter&&room.state==="ended");
 $("startQuestion").disabled=room.state==="question";
 $("buzzerArea").innerHTML="";
 if(room.state==="question"&&!setter&&!room.buzzed&&!room.blocked.includes(me)){const b=document.createElement("button");b.className="primary wide";b.style.marginTop="15px";b.style.fontSize="1.25rem";b.style.padding="20px";b.textContent="⚡ 早押し！";b.onclick=()=>socket.emit("buzz");$("buzzerArea").append(b)}
