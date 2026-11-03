@@ -16,7 +16,7 @@ $("startQuestion").onclick=()=>socket.emit("question:start",{text:$("questionTex
 $("correct").onclick=()=>socket.emit("answer:correct");
 $("wrong").onclick=()=>socket.emit("answer:wrong");
 $("endQuestion").onclick=()=>socket.emit("question:end");
-$("next").onclick=()=>socket.emit("question:next");
+$("next").onclick=()=>{if(!room?.buzzed?.answer){const proceed=confirm("回答が出ていませんが、本当に次の問題へ進みますか？\n\n回答者が回答する前に問題を終了しようとしています。");if(!proceed)return;}socket.emit("question:next")};
 $("revealAnswer").onclick=()=>{const answer=$("correctAnswer").value.trim();const note=$("correctNote").value.trim();if(!answer)return toast("正解を入力してください");$("revealAnswer").disabled=true;socket.emit("answer:reveal",{answer,note},r=>{if(!r?.ok){$("revealAnswer").disabled=false;toast(r?.error||"正解を発表できませんでした")}else{$("correctAnswer").value="";$("correctNote").value="";toast("正解を発表しました")}})};
 socket.on("room:update",r=>{room=r;me=socket.id;showGame(r.code);render();updateCountdown()});
 function updateCountdown(){
@@ -91,7 +91,7 @@ if(room.buzzed){
 }else q.innerHTML='<div class="empty">まだ問題はありません。誰でも出題できます！</div>';
 const setter=room.question&&room.question.setterId===me;
 $("setterTools").hidden=room.state==="question"||room.state==="ended";
-$("judgeTools").hidden=!(setter&&room.state==="question"&&room.buzzed);
+$("judgeTools").hidden=!(setter&&room.state==="question"&&room.buzzed);\n$("correct").hidden=!room.buzzed?.answer;\n$("wrong").hidden=!room.buzzed?.answer;
 if(setter&&room.state==="question"&&room.buzzed){$("answerForJudge").textContent=room.buzzed.answer?("届いた回答："+room.buzzed.answer):"回答者が回答を入力しています…";}
 $("nextTools").hidden=!(setter&&room.state==="ended"&&(!room.allWrong||room.revealedAnswer));
 $("revealTools").hidden=!(setter&&room.allWrong&&room.state==="ended"&&!room.revealedAnswer);
