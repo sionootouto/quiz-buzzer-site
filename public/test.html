@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>機能テスト | みんなで早押し</title><link rel="stylesheet" href="/style.css">
+<style>
+.test-wrap{max-width:760px;margin:24px auto;padding:16px}.test-row{padding:12px;border-bottom:1px solid #eee;display:flex;gap:10px;align-items:center}.test-status{font-weight:800;min-width:54px}.pass{color:#168454}.fail{color:#c03945}.running{color:#6554d9}.test-note{color:#777;font-size:.9rem;line-height:1.6}
+</style></head>
+<body><main class="test-wrap"><header><div class="logo">🧪</div><div><h1>機能テスト</h1><p>通常のゲームとは別のテスト用ルームで実行します。</p></div></header>
+<section class="panel"><p class="test-note">全テストを実行すると、最後に30秒の時間切れテストも行います。テスト用の参加者は自動で接続・退出します。</p>
+<button id="run" class="primary wide">テストを実行</button><div id="results" aria-live="polite"></div><p id="summary" class="hint"></p><p><a href="/">ゲームに戻る</a></p></section></main>
+<script src="/socket.io/socket.io.js"></script><script src="/test.js"></script></body></html>
