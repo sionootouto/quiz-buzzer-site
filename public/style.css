@@ -12,3 +12,6 @@
 
 .revealed-answer-label{font-weight:750!important;font-size:1rem!important;margin-top:14px!important}
 .result-card .revealed-answer{font-size:1.7rem;font-weight:850;line-height:1.4;margin-top:5px}
+
+.revealed-note-label{font-weight:800!important;font-size:.95rem!important;margin-top:18px!important}
+.result-card .revealed-note{font-size:1rem;line-height:1.6;text-align:left;white-space:pre-wrap;background:rgba(255,255,255,.65);border-radius:10px;padding:12px;margin-top:6px}
