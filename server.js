@@ -17,7 +17,7 @@ function publicRoom(room) {
   return {
     code: room.code, hostId: room.hostId, players: [...room.players.values()],
     question: room.question, state: room.state,
-    buzzed: room.buzzed, answerResult: room.answerResult, allWrong: room.allWrong, revealedAnswer: room.revealedAnswer, blocked: [...room.blocked],
+    buzzed: room.buzzed, answerResult: room.answerResult, allWrong: room.allWrong, revealedAnswer: room.revealedAnswer, revealedNote: room.revealedNote, blocked: [...room.blocked],
     message: room.message
   };
 }
@@ -28,7 +28,7 @@ function getRoom(socket) {
 }
 function resetQuestion(room) {
   room.question = null; room.state = "lobby"; room.buzzed = null;
-  room.answerResult = null; room.allWrong = false; room.revealedAnswer = null; room.blocked = new Set(); room.message = "次の問題を出題できます";
+  room.answerResult = null; room.allWrong = false; room.revealedAnswer = null; room.revealedNote = null; room.blocked = new Set(); room.message = "次の問題を出題できます";
 }
 io.on("connection", socket => {
   socket.data.roomCode = null;
@@ -36,7 +36,7 @@ io.on("connection", socket => {
     let code; do { code = makeCode(); } while (rooms.has(code));
     const player = { id: socket.id, token: clean(token,80), name: clean(name,24) || "参加者", connected: true };
     const room = { code, hostId: socket.id, players: new Map([[socket.id,player]]),
-      question: null, state: "lobby", buzzed: null, answerResult: null, allWrong: false, revealedAnswer: null, blocked: new Set(),
+      question: null, state: "lobby", buzzed: null, answerResult: null, allWrong: false, revealedAnswer: null, revealedNote: null, blocked: new Set(),
       message: "ルームを作成しました。参加者を待っています" };
     rooms.set(code, room); socket.join(code); socket.data.roomCode = code;
     cb?.({ok:true, code}); emitRoom(room);
@@ -76,7 +76,7 @@ io.on("connection", socket => {
     if (!text || !String(text).trim()) return cb?.({ok:false,error:"問題文を入力してください"});
     if (room.state === "question") return cb?.({ok:false,error:"現在の問題を終了してください"});
     room.question = { text: clean(text,1200), image: typeof image==="string" && image.startsWith("data:image/") ? image : null, setterId:socket.id, setterName:room.players.get(socket.id)?.name || "出題者" };
-    room.state="question"; room.buzzed=null; room.answerResult=null; room.allWrong=false; room.revealedAnswer=null; room.blocked=new Set(); room.message=`${room.question.setterName} が出題中`; cb?.({ok:true}); emitRoom(room);
+    room.state="question"; room.buzzed=null; room.answerResult=null; room.allWrong=false; room.revealedAnswer=null; room.revealedNote=null; room.blocked=new Set(); room.message=`${room.question.setterName} が出題中`; cb?.({ok:true}); emitRoom(room);
   });
   socket.on("buzz", () => {
     const room=getRoom(socket); if(!room || room.state!=="question" || room.buzzed || room.blocked.has(socket.id) || socket.id===room.question.setterId) return;
@@ -104,13 +104,14 @@ io.on("connection", socket => {
     else room.message=`不正解：${answeredPlayer.name} はこの問題の回答権を失いました。他の人は早押しできます`;
     emitRoom(room);
   });
-  socket.on("answer:reveal", (answer, cb) => {
+  socket.on("answer:reveal", ({answer,note}, cb) => {
     const room=getRoom(socket);
     if(!room || room.state!=="ended" || !room.allWrong || room.question?.setterId!==socket.id)
       return cb?.({ok:false,error:"正解を発表できる状態ではありません"});
     const cleanAnswer=clean(answer,300);
     if(!cleanAnswer) return cb?.({ok:false,error:"正解を入力してください"});
     room.revealedAnswer=cleanAnswer;
+    room.revealedNote=clean(note,1000);
     room.message="正解発表！";
     cb?.({ok:true});
     emitRoom(room);
