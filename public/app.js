@@ -17,6 +17,7 @@ $("correct").onclick=()=>socket.emit("answer:correct");
 $("wrong").onclick=()=>socket.emit("answer:wrong");
 $("endQuestion").onclick=()=>socket.emit("question:end");
 $("next").onclick=()=>socket.emit("question:next");
+$("revealAnswer").onclick=()=>{const answer=$("correctAnswer").value.trim();if(!answer)return toast("正解を入力してください");$("revealAnswer").disabled=true;socket.emit("answer:reveal",answer,r=>{if(!r?.ok){$("revealAnswer").disabled=false;toast(r?.error||"正解を発表できませんでした")}else{$("correctAnswer").value="";toast("正解を発表しました")}})};
 socket.on("room:update",r=>{room=r;me=socket.id;showGame(r.code);render()});
 function render(){
 $("count").textContent=room.players.length;$("stateBadge").textContent=room.state==="question"?"出題中":room.state==="ended"?"問題終了":"待機中";$("statusText").textContent=room.message||"";
@@ -39,6 +40,20 @@ if(room.answerResult){
     const note=document.createElement("p");note.className="result-note";note.textContent="出題者の判定待ちです";result.append(note);
   }
   q.append(result);
+}
+if(room.allWrong){
+  const allWrongCard=document.createElement("div");
+  allWrongCard.className="result-card result-wrong";
+  const allWrongTitle=document.createElement("strong");allWrongTitle.textContent="全員不正解！";
+  allWrongCard.append(allWrongTitle);
+  if(room.revealedAnswer){
+    const answerTitle=document.createElement("p");answerTitle.className="revealed-answer-label";answerTitle.textContent="正解はこちら！";
+    const answer=document.createElement("p");answer.className="revealed-answer";answer.textContent=room.revealedAnswer;
+    allWrongCard.append(answerTitle,answer);
+  }else{
+    const waiting=document.createElement("p");waiting.className="result-note";waiting.textContent="出題者が正解を発表するまでお待ちください";allWrongCard.append(waiting);
+  }
+  q.append(allWrongCard);
 }
 if(room.buzzed){
   const box=document.createElement("div");box.className="answerbox";
@@ -65,7 +80,8 @@ const setter=room.question&&room.question.setterId===me;
 $("setterTools").hidden=room.state==="question"||room.state==="ended";
 $("judgeTools").hidden=!(setter&&room.state==="question"&&room.buzzed);
 if(setter&&room.state==="question"&&room.buzzed){$("answerForJudge").textContent=room.buzzed.answer?("届いた回答："+room.buzzed.answer):"回答者が回答を入力しています…";}
-$("nextTools").hidden=!(setter&&room.state==="ended");
+$("nextTools").hidden=!(setter&&room.state==="ended"&&(!room.allWrong||room.revealedAnswer));
+$("revealTools").hidden=!(setter&&room.allWrong&&room.state==="ended"&&!room.revealedAnswer);
 $("startQuestion").disabled=room.state==="question";
 $("buzzerArea").innerHTML="";
 if(room.state==="question"&&!setter&&!room.buzzed&&!room.blocked.includes(me)){const b=document.createElement("button");b.className="primary wide";b.style.marginTop="15px";b.style.fontSize="1.25rem";b.style.padding="20px";b.textContent="⚡ 早押し！";b.onclick=()=>socket.emit("buzz");$("buzzerArea").append(b)}
