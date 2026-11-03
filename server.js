@@ -10,7 +10,7 @@ const io = new Server(server, { maxHttpBufferSize: 8e6 });
 app.use(express.static(path.join(__dirname, "public")));
 
 const rooms = new Map();
-const makeCode = () => crypto.randomBytes(3).toString("hex").toUpperCase();
+const makeCode = () => String(crypto.randomInt(1000,10000));
 const clean = (s, n=40) => String(s || "").trim().slice(0,n);
 const ANSWER_TIME_LIMIT = Math.max(1, Number(process.env.ANSWER_TIME_LIMIT_SECONDS) || 30);
 function clearAnswerTimer(room) {
@@ -38,7 +38,7 @@ function markWrong(room, answeredPlayer, reason="") {
 
 function publicRoom(room) {
   return {
-    code: room.code, hostId: room.hostId, players: [...room.players.values()],
+    code: room.code, settings:room.settings, hostId: room.hostId, players: [...room.players.values()],
     question: room.question, state: room.state,
     buzzed: room.buzzed, answerDeadline: room.answerDeadline, answerResult: room.answerResult, allWrong: room.allWrong, revealedAnswer: room.revealedAnswer, revealedNote: room.revealedNote, blocked: [...room.blocked],
     message: room.message
@@ -55,10 +55,14 @@ function resetQuestion(room) {
 }
 io.on("connection", socket => {
   socket.data.roomCode = null;
-  socket.on("room:create", (name, token, cb) => {
-    let code; do { code = makeCode(); } while (rooms.has(code));
+  socket.on("room:create", (name, token, settingsOrCb, maybeCb) => {
+    const settings=typeof settingsOrCb==="object"&&settingsOrCb?settingsOrCb:{};
+    const cb=typeof settingsOrCb==="function"?settingsOrCb:maybeCb;
+    let code;
+    if(settings.codeMode==="custom"){code=clean(settings.customCode,4);if(!/^\\d{4}$/.test(code))return cb?.({ok:false,error:"ルームコードは4桁の数字にしてください"});if(rooms.has(code))return cb?.({ok:false,error:"そのルームコードは使用中です"});}
+    else {do { code = makeCode(); } while (rooms.has(code));}
     const player = { id: socket.id, token: clean(token,80), name: clean(name,24) || "参加者", connected: true };
-    const room = { code, hostId: socket.id, players: new Map([[socket.id,player]]),
+    const room = { code, settings:{answerTime:[0,10,15,30,60].includes(Number(settings.answerTime))?Number(settings.answerTime):ANSWER_TIME_LIMIT,questionMode:["rotate","single","free"].includes(settings.questionMode)?settings.questionMode:"free",scoring:!!settings.scoring,penalties:{skip:!!settings.penalties?.skip,question:settings.penalties?.question!==false,minus:!!settings.penalties?.minus}}, hostId: socket.id, players: new Map([[socket.id,player]]),
       question: null, state: "lobby", buzzed: null, answerResult: null, answerDeadline: null, answerTimer: null, allWrong: false, revealedAnswer: null, revealedNote: null, blocked: new Set(),
       message: "ルームを作成しました。参加者を待っています" };
     rooms.set(code, room); socket.join(code); socket.data.roomCode = code;
@@ -67,7 +71,7 @@ io.on("connection", socket => {
   socket.on("room:join", ({code,name,token}, cb) => {
     code = clean(code,8).toUpperCase(); const room = rooms.get(code);
     if (!room) return cb?.({ok:false,error:"ルームが見つかりません"});
-    if (room.players.size >= 30) return cb?.({ok:false,error:"参加人数の上限です"});
+    
     const player = { id: socket.id, token: clean(token,80), name: clean(name,24) || "参加者", connected: true };
     room.players.set(socket.id,player); socket.join(code); socket.data.roomCode = code;
     room.message = `${player.name} が参加しました`; cb?.({ok:true}); emitRoom(room);
@@ -104,7 +108,7 @@ io.on("connection", socket => {
   socket.on("buzz", () => {
     const room=getRoom(socket); if(!room || room.state!=="question" || room.buzzed || room.blocked.has(socket.id) || socket.id===room.question.setterId) return;
     room.buzzed={id:socket.id,name:room.players.get(socket.id)?.name || "参加者"};
-    room.answerDeadline=Date.now()+ANSWER_TIME_LIMIT*1000;
+    const answerLimit=room.settings?.answerTime??ANSWER_TIME_LIMIT;\n    room.answerDeadline=answerLimit?Date.now()+answerLimit*1000:null;
     const buzzedId=socket.id;
     room.answerTimer=setTimeout(()=>{
       if(room.state!=="question" || room.buzzed?.id!==buzzedId) return;
@@ -112,7 +116,7 @@ io.on("connection", socket => {
       const timedOutPlayer=room.buzzed;
       markWrong(room,timedOutPlayer,"（時間切れ）");
       emitRoom(room);
-    },ANSWER_TIME_LIMIT*1000);
+    },answerLimit*1000);\n    if(!answerLimit){clearTimeout(room.answerTimer);room.answerTimer=null;}
     room.message=`${room.buzzed.name} が早押し！回答してください`; emitRoom(room);
   });
   socket.on("answer:submit", (answer, cb) => {
