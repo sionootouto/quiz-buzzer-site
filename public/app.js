@@ -95,7 +95,8 @@ if(room.buzzed){
 const setter=room.question&&room.question.setterId===me;
 $("setterTools").hidden=room.state==="question"||room.state==="ended";
 $("judgeTools").hidden=!(setter&&room.state==="question"&&room.buzzed);
-$("correct").hidden=!room.buzzed?.answer;\n$("wrong").hidden=!room.buzzed?.answer;
+$("correct").hidden=!room.buzzed?.answer;
+$("wrong").hidden=!room.buzzed?.answer;
 if(setter&&room.state==="question"&&room.buzzed){$("answerForJudge").textContent=room.buzzed.answer?("届いた回答："+room.buzzed.answer):"回答者が回答を入力しています…";}
 $("nextTools").hidden=!(setter&&room.state==="ended"&&(!room.allWrong||room.revealedAnswer));
 $("revealTools").hidden=!(setter&&room.allWrong&&room.state==="ended"&&!room.revealedAnswer);
