@@ -9,3 +9,6 @@
 .result-card.result-wrong{background:#fff0f0;border-color:#e58b91;color:#a52f3b}
 .result-card.result-pending{background:#fff8e8;border-color:#f0d28b;color:#735a20}
 .result-card .result-note{font-size:.9rem;font-weight:650}
+
+.revealed-answer-label{font-weight:750!important;font-size:1rem!important;margin-top:14px!important}
+.result-card .revealed-answer{font-size:1.7rem;font-weight:850;line-height:1.4;margin-top:5px}
