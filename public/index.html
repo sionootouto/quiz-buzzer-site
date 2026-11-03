@@ -2,22 +2,22 @@
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#6554d9"><title>みんなで早押しクイズ</title><link rel="stylesheet" href="style.css"></head>
 <body><main class="app">
 <header><h1>みんなで早押し</h1></header>
-<section id="entry" class="panel">
+<section id="entry" class="panel entry-screen">
+<div id="entryHome"><h2>遊び方を選んでね</h2><div class="entry-choice"><button id="showCreate" class="primary">ルームを作成する</button><button id="showJoin" class="secondary">ルームに参加する</button></div></div>
+<section id="createScreen" hidden><button id="backHomeCreate" class="quiet small">← 戻る</button><h2>ルームを作成</h2>
 <label>あなたの名前<input id="name" maxlength="24" placeholder="例：たろう" autocomplete="nickname"></label>
-<div class="entry-actions"><button id="create" class="primary">ルームを作る</button><div class="join"><input id="code" maxlength="8" placeholder="ルームコード"><button id="join" class="secondary">参加</button></div></div>
-
+<label>回答時間<select id="answerTime"><option value="10">10秒</option><option value="15">15秒</option><option value="30" selected>30秒</option><option value="60">60秒</option><option value="0">時間制限なし</option></select></label>
+<label>出題方法<select id="questionMode"><option value="rotate">順番に出題する</option><option value="single">作成者だけが出題する</option><option value="free">誰でも自由に出題する</option></select></label>
+<label class="checkline"><input id="scoring" type="checkbox"> 点数をつける（正解で＋1点）</label>
+<fieldset><legend>不正解のペナルティ（複数選択可）</legend><label class="checkline"><input id="penaltySkip" type="checkbox"> 次の問題は回答できない</label><label class="checkline"><input id="penaltyQuestion" type="checkbox" checked> この問題は再回答できない</label><label class="checkline"><input id="penaltyMinus" type="checkbox"> 点数を−1点</label></fieldset>
+<label>ルームコード<select id="codeMode"><option value="random">ランダム（4桁）</option><option value="custom">自分で決める</option></select></label><label id="customCodeWrap" hidden>4桁のコード<input id="customCode" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="例：1234"></label>
+<p class="hint">途中参加もできます。出題者が回答する設定・人数制限はありません。</p><button id="create" class="primary wide">ルームを作成</button></section>
+<section id="joinScreen" hidden><button id="backHomeJoin" class="quiet small">← 戻る</button><h2>ルームに参加</h2><label>あなたの名前<input id="joinName" maxlength="24" placeholder="例：たろう" autocomplete="nickname"></label><label>4桁のルームコード<input id="code" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="例：1234"></label><button id="join" class="primary wide">参加する</button></section>
 </section>
 <section id="game" hidden>
 <div class="roombar panel"><div><span class="muted">ROOM</span><strong id="roomCode"></strong></div><button id="copy" class="secondary small">コードをコピー</button><button id="leave" class="quiet small">退出</button></div>
-<div class="columns">
-<section class="panel mainpanel"><div class="statusline"><span id="stateBadge" class="badge">待機中</span><span id="statusText">出題を待っています</span></div>
-<div id="questionArea"><div class="empty">まだ問題はありません。誰でも出題できます！</div></div>
-<div id="buzzerArea"></div>
+<div class="columns"><section class="panel mainpanel"><div class="statusline"><span id="stateBadge" class="badge">待機中</span><span id="statusText">出題を待っています</span></div><div id="questionArea"><div class="empty">まだ問題はありません。</div></div><div id="buzzerArea"></div>
 <div id="setterTools" hidden><h3>出題する</h3><label>問題文<textarea id="questionText" maxlength="1200" rows="4" placeholder="問題を入力（写真問題なら写真だけでもOK）"></textarea></label><label class="upload">写真を追加<input id="photo" type="file" accept="image/*"></label><img id="preview" alt="画像プレビュー" hidden><div class="buttonrow"><button id="startQuestion" class="primary">出題開始</button></div></div>
 <div id="judgeTools" hidden><h3>回答判定</h3><p id="answerForJudge" class="hint">回答を待っています。</p><div class="buttonrow"><button id="correct" class="good">正解</button><button id="wrong" class="danger">不正解</button><button id="endQuestion" class="secondary">問題終了</button></div></div>
-<div id="revealTools" hidden><h3>正解発表</h3><label>正解を入力<input id="correctAnswer" type="text" maxlength="300" placeholder="正解を入力してください"></label><label>備考（任意）<textarea id="correctNote" maxlength="1000" rows="3" placeholder="補足説明など。空欄なら表示されません"></textarea></label><div class="buttonrow"><button id="revealAnswer" class="good">正解を発表する</button></div></div>
-<div id="nextTools" hidden><button id="next" class="primary wide">次の問題へ</button></div>
-</section>
-<aside class="panel players"><h2>参加者 <span id="count">0</span></h2><ul id="playerList"></ul></aside>
-</div></section><div id="toast" role="status"></div></main>
+<div id="revealTools" hidden><h3>正解発表</h3><label>正解を入力<input id="correctAnswer" type="text" maxlength="300" placeholder="正解を入力してください"></label><label>備考（任意）<textarea id="correctNote" maxlength="1000" rows="3" placeholder="補足説明など"></textarea></label><div class="buttonrow"><button id="revealAnswer" class="good">正解を発表する</button></div></div><div id="nextTools" hidden><button id="next" class="primary wide">次の問題へ</button></div></section><aside class="panel players"><h2>参加者 <span id="count">0</span></h2><ul id="playerList"></ul></aside></div></section><div id="toast" role="status"></div></main>
 <script src="/socket.io/socket.io.js"></script><script src="app.js"></script></body></html>
