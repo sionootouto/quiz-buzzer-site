@@ -2,13 +2,16 @@ const socket=io();
 const $=id=>document.getElementById(id);
 let room=null, me=null, selectedImage=null, toastTimer;
 function toast(msg){$("toast").textContent=msg;$("toast").classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.remove("show"),2600)}
-function name(){return $("name").value.trim()||"参加者"}
+function name(){return ($("joinName")?.value||$("name")?.value||"").trim()||"参加者"}
+function showEntryScreen(screen){$("entryHome").hidden=screen!=="home";$("createScreen").hidden=screen!=="create";$("joinScreen").hidden=screen!=="join";$("entry").hidden=false;$("game").hidden=true}
+$("showCreate").onclick=()=>showEntryScreen("create");$("showJoin").onclick=()=>showEntryScreen("join");$("backHomeCreate").onclick=()=>showEntryScreen("home");$("backHomeJoin").onclick=()=>showEntryScreen("home");
+$("codeMode").onchange=()=>{$("customCodeWrap").hidden=$("codeMode").value!=="custom"};
 function playerToken(){let token=sessionStorage.getItem("quizPlayerToken");if(!token){token=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();sessionStorage.setItem("quizPlayerToken",token)}return token}
 function saveRoomSession(code){sessionStorage.setItem("quizRoomSession",JSON.stringify({code,name:name(),token:playerToken()}))}
 function showGame(code){$("entry").hidden=true;$("game").hidden=false;$("roomCode").textContent=code}
 function showEntry(){ $("entry").hidden=false;$("game").hidden=true;room=null;me=null}
-$("create").onclick=()=>socket.emit("room:create",name(),playerToken(),r=>{if(!r.ok)return toast(r.error);me=socket.id;saveRoomSession(r.code);showGame(r.code);toast("ルームを作りました")});
-$("join").onclick=()=>socket.emit("room:join",{code:$("code").value,name:name(),token:playerToken()},r=>{if(!r.ok)return toast(r.error);me=socket.id;saveRoomSession($("code").value.trim().toUpperCase());showGame($("code").value.trim().toUpperCase());toast("参加しました")});
+$("create").onclick=()=>{const nm=$("name").value.trim()||"参加者";const settings={answerTime:Number($("answerTime").value),questionMode:$("questionMode").value,scoring:$("scoring").checked,penalties:{skip:$("penaltySkip").checked,question:$("penaltyQuestion").checked,minus:$("penaltyMinus").checked},codeMode:$("codeMode").value,customCode:$("customCode").value.trim()};if(settings.codeMode==="custom"&&!/^\\d{4}$/.test(settings.customCode))return toast("ルームコードは4桁の数字で入力してください");socket.emit("room:create",nm,playerToken(),settings,r=>{if(!r.ok)return toast(r.error);me=socket.id;saveRoomSession(r.code);showGame(r.code);toast("ルームを作りました")})};
+$("join").onclick=()=>{const code=$("code").value.trim();if(!/^\\d{4}$/.test(code))return toast("4桁のルームコードを入力してください");socket.emit("room:join",{code,name:name(),token:playerToken()},r=>{if(!r.ok)return toast(r.error);me=socket.id;saveRoomSession(code);showGame(code);toast("参加しました")})};
 $("copy").onclick=async()=>{try{await navigator.clipboard.writeText(room.code);toast("ルームコードをコピーしました")}catch{toast("ルームコード："+room.code)}};
 $("leave").onclick=()=>{sessionStorage.removeItem("quizRoomSession");sessionStorage.removeItem("quizPlayerToken");socket.disconnect();location.reload()};
 $("photo").onchange=()=>{const f=$("photo").files[0];if(!f)return;if(f.size>5*1024*1024){toast("写真は5MB以下にしてください");$("photo").value="";return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement("canvas"),max=1400,scale=Math.min(1,max/Math.max(img.width,img.height));c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext("2d").drawImage(img,0,0,c.width,c.height);selectedImage=c.toDataURL("image/jpeg",.82);$("preview").src=selectedImage;$("preview").hidden=false};img.src=reader.result};reader.readAsDataURL(f)};
