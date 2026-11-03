@@ -17,7 +17,7 @@ $("correct").onclick=()=>socket.emit("answer:correct");
 $("wrong").onclick=()=>socket.emit("answer:wrong");
 $("endQuestion").onclick=()=>socket.emit("question:end");
 $("next").onclick=()=>socket.emit("question:next");
-$("revealAnswer").onclick=()=>{const answer=$("correctAnswer").value.trim();if(!answer)return toast("正解を入力してください");$("revealAnswer").disabled=true;socket.emit("answer:reveal",answer,r=>{if(!r?.ok){$("revealAnswer").disabled=false;toast(r?.error||"正解を発表できませんでした")}else{$("correctAnswer").value="";toast("正解を発表しました")}})};
+$("revealAnswer").onclick=()=>{const answer=$("correctAnswer").value.trim();const note=$("correctNote").value.trim();if(!answer)return toast("正解を入力してください");$("revealAnswer").disabled=true;socket.emit("answer:reveal",{answer,note},r=>{if(!r?.ok){$("revealAnswer").disabled=false;toast(r?.error||"正解を発表できませんでした")}else{$("correctAnswer").value="";$("correctNote").value="";toast("正解を発表しました")}})};
 socket.on("room:update",r=>{room=r;me=socket.id;showGame(r.code);render()});
 function render(){
 $("count").textContent=room.players.length;$("stateBadge").textContent=room.state==="question"?"出題中":room.state==="ended"?"問題終了":"待機中";$("statusText").textContent=room.message||"";
@@ -50,6 +50,7 @@ if(room.allWrong){
     const answerTitle=document.createElement("p");answerTitle.className="revealed-answer-label";answerTitle.textContent="正解はこちら！";
     const answer=document.createElement("p");answer.className="revealed-answer";answer.textContent=room.revealedAnswer;
     allWrongCard.append(answerTitle,answer);
+    if(room.revealedNote){const noteTitle=document.createElement("p");noteTitle.className="revealed-note-label";noteTitle.textContent="備考";const note=document.createElement("p");note.className="revealed-note";note.textContent=room.revealedNote;allWrongCard.append(noteTitle,note)}
   }else{
     const waiting=document.createElement("p");waiting.className="result-note";waiting.textContent="出題者が正解を発表するまでお待ちください";allWrongCard.append(waiting);
   }
