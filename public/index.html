@@ -1,1 +1,22 @@
-
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#6554d9"><title>みんなで早押しクイズ</title><link rel="stylesheet" href="style.css"></head>
+<body><main class="app">
+<header><div class="logo">⚡</div><div><h1>みんなで早押し</h1><p>自由に出題、みんなで回答。</p></div></header>
+<section id="entry" class="panel">
+<label>あなたの名前<input id="name" maxlength="24" placeholder="例：たろう" autocomplete="nickname"></label>
+<div class="entry-actions"><button id="create" class="primary">ルームを作る</button><div class="join"><input id="code" maxlength="8" placeholder="ルームコード"><button id="join" class="secondary">参加</button></div></div>
+<p class="hint">ルームを作った人も参加者です。コードを友達に共有しよう。</p>
+</section>
+<section id="game" hidden>
+<div class="roombar panel"><div><span class="muted">ROOM</span><strong id="roomCode"></strong></div><button id="copy" class="secondary small">コードをコピー</button><button id="leave" class="quiet small">退出</button></div>
+<div class="columns">
+<section class="panel mainpanel"><div class="statusline"><span id="stateBadge" class="badge">待機中</span><span id="statusText">出題を待っています</span></div>
+<div id="questionArea"><div class="empty">まだ問題はありません。誰でも出題できます！</div></div>
+<div id="buzzerArea"></div>
+<div id="setterTools" hidden><h3>出題する</h3><label>問題文<textarea id="questionText" maxlength="1200" rows="4" placeholder="問題を入力（写真問題なら写真だけでもOK）"></textarea></label><label class="upload">写真を追加<input id="photo" type="file" accept="image/*"></label><img id="preview" alt="画像プレビュー" hidden><div class="buttonrow"><button id="startQuestion" class="primary">出題開始</button></div></div>
+<div id="judgeTools" hidden><h3>回答判定</h3><p class="hint">回答者の答えを聞いて、出題者が判定します。</p><div class="buttonrow"><button id="correct" class="good">正解</button><button id="wrong" class="danger">不正解</button><button id="endQuestion" class="secondary">問題終了</button></div></div>
+<div id="nextTools" hidden><button id="next" class="primary wide">次の問題へ</button></div>
+</section>
+<aside class="panel players"><h2>参加者 <span id="count">0</span></h2><ul id="playerList"></ul><p class="hint">点数・順位はありません。何問でも自由に出題できます。</p></aside>
+</div></section><div id="toast" role="status"></div></main>
+<script src="/socket.io/socket.io.js"></script><script src="app.js"></script></body></html>
