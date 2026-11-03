@@ -61,6 +61,16 @@ io.on("connection", socket => {
     room.buzzed={id:socket.id,name:room.players.get(socket.id)?.name || "参加者"};
     room.message=`${room.buzzed.name} が早押し！回答してください`; emitRoom(room);
   });
+  socket.on("answer:submit", (answer, cb) => {
+    const room=getRoom(socket);
+    if(!room || room.state!=="question" || room.buzzed?.id!==socket.id)
+      return cb?.({ok:false,error:"回答できる状態ではありません"});
+    const cleanAnswer=clean(answer,300);
+    if(!cleanAnswer) return cb?.({ok:false,error:"回答を入力してください"});
+    room.buzzed.answer=cleanAnswer;
+    room.message=room.buzzed.name + " が回答を送信しました";
+    cb?.({ok:true}); emitRoom(room);
+  });
   socket.on("answer:wrong", () => {
     const room=getRoom(socket); if(!room || room.state!=="question" || room.buzzed?.id!==socket.id) return;
     room.blocked.add(socket.id); room.buzzed=null;
