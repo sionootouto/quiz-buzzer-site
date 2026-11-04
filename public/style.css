@@ -217,3 +217,14 @@ textarea:focus{
   background:#333;
 }
 
+/* Make the create/join choices equally soft and low-contrast */
+.entry-choice .primary,
+.entry-choice .secondary{
+  background:#e8e8e8;
+  color:#333;
+}
+.entry-choice .primary:hover,
+.entry-choice .secondary:hover{
+  background:#dcdcdc;
+}
+
