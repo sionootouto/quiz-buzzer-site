@@ -57,3 +57,7 @@
  #entryHome{transform:none}
  .entry-choice button{min-height:74px;font-size:1.2rem}
 }
+
+/* Make the title's white header area compact */
+.title-header{display:flex;justify-content:center;align-items:center;width:max-content;max-width:100%;margin:0 auto 0;padding:0;background:#fff;border-radius:14px}
+.title-header h1{padding:0.04em .22em;line-height:1.05}
