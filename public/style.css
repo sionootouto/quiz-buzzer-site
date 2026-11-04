@@ -29,3 +29,18 @@
 .title-header h1{font-size:clamp(2.8rem,9vw,5.2rem);font-weight:900;letter-spacing:.045em;line-height:1.12;color:var(--purple);text-shadow:0 5px 22px #6554d925}
 #entry.entry-screen{align-items:flex-start;padding-top:2vh}
 @media(max-width:700px){.title-header{padding-top:2vh;margin-bottom:18px}.title-header h1{font-size:clamp(2.6rem,12vw,4rem)}}
+
+/* Larger Qangomu title and raised entry buttons */
+.title-header{margin-bottom:12px;padding-top:1vh}
+.title-header h1{font-size:clamp(3.8rem,14vw,7rem);letter-spacing:.025em}
+#entry.entry-screen{padding-top:0;min-height:calc(100dvh - 150px)}
+#entryHome{transform:translateY(-4vh)}
+.entry-choice{max-width:480px;gap:16px}
+.entry-choice button{min-height:76px;font-size:1.25rem}
+@media(max-width:700px){
+ .title-header{margin-bottom:10px;padding-top:0}
+ .title-header h1{font-size:clamp(3.6rem,17vw,6rem)}
+ #entry.entry-screen{min-height:calc(100dvh - 125px)}
+ #entryHome{transform:translateY(-3vh)}
+ .entry-choice button{min-height:74px;font-size:1.2rem}
+}
