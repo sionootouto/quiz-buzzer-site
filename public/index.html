@@ -4,14 +4,14 @@
 <section id="entry" class="panel entry-screen">
 <div id="entryHome"><header class="title-header"><h1>Qangomu</h1></header><div class="entry-choice"><button id="showCreate" class="primary">ルームを作成する</button><button id="showJoin" class="secondary">ルームに参加する</button></div></div>
 <section id="createScreen" hidden><button id="backHomeCreate" class="quiet small">← 戻る</button><h2>ルームを作成</h2>
-<label>あなたの名前<input id="name" maxlength="24" placeholder="例：たろう" autocomplete="nickname"></label>
+<label>あなたの名前<input id="name" maxlength="24" placeholder="例：たんごむ" autocomplete="nickname"></label>
 <label>回答時間<select id="answerTime"><option value="10">10秒</option><option value="15">15秒</option><option value="30" selected>30秒</option><option value="60">60秒</option><option value="0">時間制限なし</option></select></label>
 <label>出題方法<select id="questionMode"><option value="rotate">順番に出題する</option><option value="single">作成者だけが出題する</option><option value="free">誰でも自由に出題する</option></select></label>
 <label class="checkline"><input id="scoring" type="checkbox"> 点数をつける（正解で＋1点）</label>
 <fieldset><legend>不正解のペナルティ（複数選択可）</legend><label class="checkline"><input id="penaltySkip" type="checkbox"> 次の問題は回答できない</label><label class="checkline"><input id="penaltyQuestion" type="checkbox" checked> この問題は再回答できない</label><label class="checkline"><input id="penaltyMinus" type="checkbox"> 点数を−1点</label></fieldset>
 <label>ルームコード<select id="codeMode"><option value="random">ランダム（4桁）</option><option value="custom">自分で決める</option></select></label><label id="customCodeWrap" hidden>4桁のコード<input id="customCode" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="例：1234"></label>
 <p class="hint">途中参加もできます。出題者が回答する設定・人数制限はありません。</p><button id="create" class="primary wide">ルームを作成</button></section>
-<section id="joinScreen" hidden><button id="backHomeJoin" class="quiet small">← 戻る</button><h2>ルームに参加</h2><label>あなたの名前<input id="joinName" maxlength="24" placeholder="例：たろう" autocomplete="nickname"></label><label>4桁のルームコード<input id="code" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="例：1234"></label><button id="join" class="primary wide">参加する</button></section>
+<section id="joinScreen" hidden><button id="backHomeJoin" class="quiet small">← 戻る</button><h2>ルームに参加</h2><label>あなたの名前<input id="joinName" maxlength="24" placeholder="例：たんごむ" autocomplete="nickname"></label><label>4桁のルームコード<input id="code" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="例：1234"></label><button id="join" class="primary wide">参加する</button></section>
 </section>
 <section id="game" hidden>
 <div class="roombar panel"><div><span class="muted">ROOM</span><strong id="roomCode"></strong></div><button id="copy" class="secondary small">コードをコピー</button><button id="leave" class="quiet small">退出</button></div>
