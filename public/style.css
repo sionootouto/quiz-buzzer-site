@@ -23,3 +23,9 @@
 .entry-screen h2{margin:0 0 18px;font-size:1.25rem}.entry-choice{display:grid;gap:12px}.entry-choice button{width:100%;min-height:58px;font-size:1.05rem}.entry-screen section>h2{margin:18px 0}.entry-screen section>button:first-child{margin-bottom:10px}.entry-screen fieldset{border:1px solid var(--line);border-radius:14px;padding:14px;margin:14px 0 18px}.entry-screen legend{font-weight:750;padding:0 6px}.entry-screen .checkline{display:flex;align-items:center;gap:10px;font-weight:500;margin:10px 0}.entry-screen .checkline input{width:20px;height:20px;margin:0;flex:0 0 auto}.entry-screen select{display:block;width:100%;padding:12px;border:1px solid #dedce9;border-radius:12px;background:#fff;margin-top:7px;color:var(--ink)}.entry-screen .wide{margin-top:10px}
 
 #entry.entry-screen{min-height:calc(100dvh - 110px);display:flex;align-items:center;justify-content:center}#entryHome{width:100%}.entry-choice{display:flex;flex-direction:column;gap:14px;max-width:420px;margin:0 auto}.entry-choice button{min-height:64px;font-size:1.08rem}
+
+/* Qangomu title screen */
+.title-header{justify-content:center;text-align:center;padding-top:3vh;margin-bottom:24px}
+.title-header h1{font-size:clamp(2.8rem,9vw,5.2rem);font-weight:900;letter-spacing:.045em;line-height:1.12;color:var(--purple);text-shadow:0 5px 22px #6554d925}
+#entry.entry-screen{align-items:flex-start;padding-top:2vh}
+@media(max-width:700px){.title-header{padding-top:2vh;margin-bottom:18px}.title-header h1{font-size:clamp(2.6rem,12vw,4rem)}}
