@@ -115,3 +115,12 @@
   .app{padding-bottom:16px}
   #entry.entry-screen{min-height:calc(100dvh - 32px)}
 }
+
+
+/* Align both back buttons to the same top-left position inside the white panel */
+#backHomeCreate,
+#backHomeJoin{
+  display:block;
+  margin:0 0 16px 0;
+  align-self:flex-start;
+}
