@@ -217,19 +217,19 @@ textarea:focus{
   background:#333;
 }
 
-/* Give the create/join choices a subtle difference */
+/* Make the create/join choices more clearly distinct */
 .entry-choice .primary{
-  background:#e2e2e2;
-  color:#333;
+  background:#cfcfcf;
+  color:#292929;
 }
 .entry-choice .secondary{
-  background:#ededed;
+  background:#f0f0f0;
   color:#333;
 }
 .entry-choice .primary:hover{
-  background:#d8d8d8;
+  background:#c2c2c2;
 }
 .entry-choice .secondary:hover{
-  background:#e3e3e3;
+  background:#e5e5e5;
 }
 
