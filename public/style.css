@@ -79,3 +79,29 @@
   padding:0;
   line-height:1.05;
 }
+
+
+/* Put the logo and both entry buttons inside one shared white panel */
+#entry.entry-screen{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:center;
+}
+#entryHome{width:100%}
+.title-header{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  margin:0 0 14px;
+  padding:0;
+  background:transparent;
+  border-radius:0;
+  box-shadow:none;
+}
+.title-header h1{
+  padding:0;
+  line-height:1.05;
+}
+.entry-choice{margin:0 auto}
