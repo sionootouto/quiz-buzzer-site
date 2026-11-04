@@ -106,3 +106,12 @@
   line-height:1.05;
 }
 .entry-choice{margin:0 auto}
+
+
+/* Keep the shared entry panel equally spaced from the top and bottom */
+.app{padding-bottom:24px}
+#entry.entry-screen{min-height:calc(100dvh - 48px)}
+@media(max-width:700px){
+  .app{padding-bottom:16px}
+  #entry.entry-screen{min-height:calc(100dvh - 32px)}
+}
