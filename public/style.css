@@ -124,3 +124,96 @@
   margin:0 0 16px 0;
   align-self:flex-start;
 }
+
+/* Minimal monochrome theme: white, gray, and charcoal */
+:root{
+  --purple:#444;
+  --ink:#242424;
+  --muted:#777;
+  --line:#dedede;
+  --bg:#f3f3f3;
+}
+body{
+  background:#f3f3f3;
+  color:#242424;
+}
+.panel{
+  border-color:#e2e2e2;
+  box-shadow:0 4px 18px rgba(0,0,0,.035);
+}
+.primary,
+.good,
+.danger{
+  background:#444;
+  color:#fff;
+}
+.primary:hover,
+.good:hover,
+.danger:hover{
+  background:#292929;
+}
+.secondary,
+.quiet{
+  background:#ededed;
+  color:#333;
+}
+.logo{
+  background:#444;
+  box-shadow:none;
+}
+input:focus,
+textarea:focus{
+  border-color:#777;
+  box-shadow:0 0 0 3px rgba(0,0,0,.07);
+}
+.title-header h1{
+  color:#292929;
+  text-shadow:none;
+}
+.badge{
+  background:#ededed;
+  color:#444;
+}
+.empty{
+  background:#f7f7f7;
+  border-color:#d5d5d5;
+}
+.players h2 span,
+.players li.me:after{
+  background:#ededed;
+  color:#444;
+}
+.players li.setter:before,
+.players li.buzzed{
+  color:#444;
+}
+.upload{
+  background:#ededed;
+  color:#333;
+}
+.answerbox{
+  background:#f5f5f5;
+  border-color:#d8d8d8;
+}
+.answerbox p{
+  color:#555;
+}
+.result-card{
+  background:#f7f7f7;
+  border-color:#d8d8d8;
+}
+.result-card.result-correct,
+.result-card.result-wrong,
+.result-card.result-pending{
+  background:#f2f2f2;
+  border-color:#cfcfcf;
+  color:#333;
+}
+.countdown,
+.countdown.countdown-warning{
+  color:#333;
+}
+#toast{
+  background:#333;
+}
+
