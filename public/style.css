@@ -44,3 +44,16 @@
  #entryHome{transform:translateY(-3vh)}
  .entry-choice button{min-height:74px;font-size:1.2rem}
 }
+
+/* Keep the entry buttons centered; move only the title above them */
+.title-header{margin-bottom:0;padding-top:0}
+#entry.entry-screen{align-items:center;justify-content:center;padding-top:0;min-height:calc(100dvh - 150px)}
+#entryHome{transform:none}
+.entry-choice{max-width:480px;gap:16px}
+.entry-choice button{min-height:76px;font-size:1.25rem}
+@media(max-width:700px){
+ .title-header{margin-bottom:0;padding-top:0}
+ #entry.entry-screen{min-height:calc(100dvh - 125px);padding-top:0}
+ #entryHome{transform:none}
+ .entry-choice button{min-height:74px;font-size:1.2rem}
+}
